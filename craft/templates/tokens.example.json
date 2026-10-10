@@ -1,0 +1,445 @@
+{
+  "$description": "SPEC/example only (fictional Telugu pickle brand). Replace every value after evidence-led brand approval. DTCG 2025.10 format; validate with craft/qa/validate_tokens.py, then transform with a token tool (e.g. Style Dictionary).",
+  "core": {
+    "color": {
+      "$type": "color",
+      "canvas": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9686,
+            0.9529,
+            0.9294
+          ],
+          "hex": "#F7F3ED"
+        }
+      },
+      "ink": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.1255,
+            0.1098,
+            0.098
+          ],
+          "hex": "#201C19"
+        }
+      },
+      "chilli": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5451,
+            0.1608,
+            0.1412
+          ],
+          "hex": "#8B2924"
+        }
+      },
+      "muted": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.4078,
+            0.3804,
+            0.3529
+          ],
+          "hex": "#68615A"
+        }
+      },
+      "line": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.8745,
+            0.8471,
+            0.8196
+          ],
+          "hex": "#DFD8D1"
+        }
+      },
+      "lineStrong": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5725,
+            0.549,
+            0.5255
+          ],
+          "hex": "#928C86"
+        }
+      },
+      "focus": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.0902,
+            0.4118,
+            0.6667
+          ],
+          "hex": "#1769AA"
+        }
+      },
+      "white": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "hex": "#FFFFFF"
+        }
+      }
+    },
+    "font": {
+      "family": {
+        "$type": "fontFamily",
+        "display": {
+          "$value": [
+            "Anek Telugu",
+            "Georgia",
+            "serif"
+          ],
+          "$description": "Example only; confirm licence and Telugu shaping"
+        },
+        "body": {
+          "$value": [
+            "Noto Sans Telugu",
+            "system-ui",
+            "sans-serif"
+          ]
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "regular": {
+          "$value": 400
+        },
+        "semibold": {
+          "$value": 600
+        },
+        "bold": {
+          "$value": 700
+        }
+      },
+      "size": {
+        "$type": "dimension",
+        "stepm1": {
+          "min": {
+            "$value": {
+              "value": 0.833,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 0.9,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 13.3px to 14.4px"
+        },
+        "step0": {
+          "min": {
+            "$value": {
+              "value": 1.0,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 1.125,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 16.0px to 18.0px"
+        },
+        "step1": {
+          "min": {
+            "$value": {
+              "value": 1.2,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 1.406,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 19.2px to 22.5px"
+        },
+        "step2": {
+          "min": {
+            "$value": {
+              "value": 1.44,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 1.758,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 23.0px to 28.1px"
+        },
+        "step3": {
+          "min": {
+            "$value": {
+              "value": 1.728,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 2.197,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 27.6px to 35.2px"
+        },
+        "step4": {
+          "min": {
+            "$value": {
+              "value": 2.074,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 2.747,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 33.2px to 43.9px"
+        },
+        "step5": {
+          "min": {
+            "$value": {
+              "value": 2.488,
+              "unit": "rem"
+            }
+          },
+          "max": {
+            "$value": {
+              "value": 3.433,
+              "unit": "rem"
+            }
+          },
+          "$description": "fluid: clamp(min, preferred vw, max); 39.8px to 54.9px"
+        }
+      },
+      "lineHeight": {
+        "$type": "number",
+        "body": {
+          "$value": 1.5
+        },
+        "heading": {
+          "$value": 1.15
+        }
+      },
+      "letterSpacingCaps": {
+        "$type": "number",
+        "$value": 0.08,
+        "$description": "em; use only for all-caps text under one line (5-12%)"
+      },
+      "measure": {
+        "$type": "number",
+        "$value": 66,
+        "$description": "body line length in ch (45-75 range)"
+      }
+    },
+    "space": {
+      "$type": "dimension",
+      "1": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "2": {
+        "$value": {
+          "value": 8,
+          "unit": "px"
+        }
+      },
+      "3": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "4": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "6": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "8": {
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "12": {
+        "$value": {
+          "value": 48,
+          "unit": "px"
+        }
+      },
+      "16": {
+        "$value": {
+          "value": 64,
+          "unit": "px"
+        }
+      },
+      "24": {
+        "$value": {
+          "value": 96,
+          "unit": "px"
+        }
+      }
+    },
+    "radius": {
+      "$type": "dimension",
+      "sm": {
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        }
+      },
+      "md": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "lg": {
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "pill": {
+        "$value": {
+          "value": 999,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "semantic": {
+    "color": {
+      "$type": "color",
+      "surface": {
+        "$value": "{core.color.canvas}"
+      },
+      "text": {
+        "$value": "{core.color.ink}"
+      },
+      "subtleText": {
+        "$value": "{core.color.muted}"
+      },
+      "action": {
+        "$value": "{core.color.chilli}"
+      },
+      "onAction": {
+        "$value": "{core.color.white}"
+      },
+      "border": {
+        "$value": "{core.color.line}",
+        "$description": "decorative dividers only"
+      },
+      "borderStrong": {
+        "$value": "{core.color.lineStrong}",
+        "$description": "inputs and UI boundaries, >=3:1 on surface"
+      },
+      "focusRing": {
+        "$value": "{core.color.focus}"
+      }
+    }
+  },
+  "component": {
+    "button": {
+      "background": {
+        "$type": "color",
+        "$value": "{semantic.color.action}"
+      },
+      "label": {
+        "$type": "color",
+        "$value": "{semantic.color.onAction}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{core.radius.md}"
+      }
+    },
+    "input": {
+      "border": {
+        "$type": "color",
+        "$value": "{semantic.color.borderStrong}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{core.radius.sm}"
+      }
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "fast": {
+        "$value": {
+          "value": 120,
+          "unit": "ms"
+        }
+      },
+      "normal": {
+        "$value": {
+          "value": 220,
+          "unit": "ms"
+        }
+      },
+      "long": {
+        "$value": {
+          "value": 300,
+          "unit": "ms"
+        }
+      },
+      "story": {
+        "$value": {
+          "value": 700,
+          "unit": "ms"
+        },
+        "$description": "once per major scene, never blocks content"
+      }
+    },
+    "ease": {
+      "$type": "cubicBezier",
+      "settle": {
+        "$value": [
+          0.22,
+          1,
+          0.36,
+          1
+        ]
+      },
+      "out": {
+        "$value": [
+          0,
+          0,
+          0.58,
+          1
+        ]
+      }
+    }
+  }
+}
