@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./tokens.css";
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    line-height: var(--leading-body);
+    font-variant-numeric: tabular-nums;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Telugu needs taller lines: stacked conjuncts and vowel signs sit above and below the line.
+     Overriding the variables lets leading-body / leading-heading utilities adapt inside Telugu fragments. */
+  [lang="te"] {
+    --leading-body: var(--leading-body-te);
+    --leading-heading: var(--leading-heading-te);
+    line-height: var(--leading-body);
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  label {
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: var(--leading-heading);
+    text-wrap: balance;
+    scroll-margin-top: var(--space-16);
+  }
+
+  /* Native selects on Windows ignore inherited colours. */
+  select {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "vaddana",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "tokens": "node scripts/build-tokens.mjs",
+    "qa:tokens": "python craft/qa/validate_tokens.py design/tokens.json",
+    "qa:screens": "node craft/qa/screens.mjs"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "cn": "^0.4.0",
+    "lucide-react": "^1.55.0",
+    "next": "16.4.0",
+    "radix-ui": "^1.7.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "shadcn": "^4.21.4",
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "playwright": "^1.64.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5"
+  }
+}

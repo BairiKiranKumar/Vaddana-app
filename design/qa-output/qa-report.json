@@ -1,0 +1,67 @@
+{
+  "url": "http://localhost:3000/preview",
+  "date": "2026-10-11T11:04:38.434Z",
+  "checks": [
+    {
+      "status": "PASS",
+      "id": "controls-without-accessible-name",
+      "detail": []
+    },
+    {
+      "status": "PASS",
+      "id": "images-missing-alt",
+      "detail": []
+    },
+    {
+      "status": "PASS",
+      "id": "inputs-without-label",
+      "detail": []
+    },
+    {
+      "status": "PASS",
+      "id": "single-h1",
+      "detail": 1
+    },
+    {
+      "status": "PASS",
+      "id": "html-lang",
+      "detail": "en"
+    },
+    {
+      "status": "PASS",
+      "id": "page-title",
+      "detail": "Component preview · Vaddana"
+    },
+    {
+      "status": "WARN",
+      "id": "tap-targets-under-44px-mobile",
+      "detail": [
+        "a 1x1"
+      ]
+    },
+    {
+      "status": "PASS",
+      "id": "content-hidden-under-reduced-motion",
+      "detail": "100% of normal text visible"
+    }
+  ],
+  "screenshots": [
+    "design\\qa-output\\320-normal.png",
+    "design\\qa-output\\375-normal.png",
+    "design\\qa-output\\768-normal.png",
+    "design\\qa-output\\1024-normal.png",
+    "design\\qa-output\\1440-normal.png",
+    "design\\qa-output\\320-reduced.png",
+    "design\\qa-output\\375-reduced.png",
+    "design\\qa-output\\768-reduced.png",
+    "design\\qa-output\\1024-reduced.png",
+    "design\\qa-output\\1440-reduced.png"
+  ],
+  "consoleErrors": [],
+  "needsHuman": [
+    "Keyboard walkthrough: Tab/Shift+Tab/Enter/Escape and focus return on overlays",
+    "Real Android + iPhone Safari check",
+    "Field Core Web Vitals (PageSpeed Insights field data / RUM) once there is traffic",
+    "Five-person task test on the primary action"
+  ]
+}

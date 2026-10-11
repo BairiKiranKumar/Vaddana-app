@@ -1,24 +1,26 @@
-# Example Brand Direction — SPEC ONLY, not a real client
-**Demo category:** handcrafted Telugu pickle brand. Replace with observed details before any client delivery. All example customer/product references are fictional and must not be published as facts.
+# Vaddana (వడ్డన) — Brand Direction
+**Status:** platform brand, from `../design.md` sections 3, 5 and 7. Latin typeface and marketing route still open. Not a client spec.
 
-**Unmistakable hypothesis:** “Packaging marks, oil sheen and spice textures become a visual narrative of careful preparation.” Validate against product/owner and real photography.
+**Unmistakable hypothesis:** a Telugu-first ordering tool that reads like a calm, well-run local restaurant counter: ink on paper, real dishes, both scripts treated as equals. Validate with pilot restaurants.
+
+## Two brands, one product
+- **Vaddana's brand** appears on staff, kitchen, admin and the marketing site.
+- **The restaurant's brand** appears on the diner menu: its logo and one accent colour. If that accent fails 4.5:1, fall back to ink. Vaddana stays quiet there.
 
 ## Brand rules
-- Tone: direct, appetizing, familiar; NOT luxury jargon, fake nostalgia, or fabricated ancestral claims.
-- Color logic: deep chilli-red action, warm paper canvas, charcoal ink, turmeric/gold used sparingly; sample from *actual* pack images once available.
-- Type roles: expressive Telugu-capable display if brand uses Telugu; legible high-performance body; correct script shaping and tested font subsets.
-- Layout: label/packaging-led asymmetry in hero, tight fact-heavy product information, spacious recipe/editorial stories.
-- Photography: real jars, actual ingredients, hands and prep space with consent; avoid AI 'factory photography' posing as real staff or hygiene proof.
-- Motion: one tactile wipe or scroll-chapter showing real 3-step process; simple UI microinteractions elsewhere.
-- CTA: a clear buy/order enquiry action; verified product price/stock and delivery policy are visible.
-- Mobile: vertical narrative, product info and CTA accessible before animation; no forced sideways pinning.
-- Reduced motion: all process photos/stages in normal sequence.
+- Tone: short, warm, practical; Telangana Telugu as people speak it; English loanwords (order, bill, table) are fine.
+- Colour: ink and paper surfaces, indigo accent (Pochampally ikat reference). Never green, red or brown as brand colours; those mean veg/non-veg.
+- Type: Noto Sans Telugu for UI, Ramabhadra for display, Latin grotesk with tabular numerals TBD. Telugu body line height ≥ 1.6.
+- Layout: content is the interface; whitespace before dividers; one primary action per screen.
+- Imagery: real dishes, real restaurants, real screenshots. No stock "happy diners", no clipart.
+- Motion: feedback only on product surfaces (≤ 250 ms); expressive motion only on the marketing site.
+- Local reference: one Telangana craft pattern (Pochampally ikat or Nirmal), used once, on marketing and printed stands only.
 
-## Variation controls
-Do NOT carry these exact color, type, motif, or layout choices into a salon, dentist or preschool brief. **Reusable parts are the research-to-direction process, semantic tokens and QA rules, not the look.**
+## Banned
+See `../design.md` section 5 (purple gradients, gradient text, eyebrow labels everywhere, three identical icon cards, emoji icons, glassmorphism, floating pills, fake div screenshots, purposeless motion, generic Indian clipart).
 
-## Source/evidence TODO
-- [ ] Obtain signed-off client brief and actual label photographs
-- [ ] Interview buyers and record approved ingredient/process facts
-- [ ] Replace conceptual photos with approved, permissioned assets
-- [ ] Verify delivery geography, prices, product claims and CTA
+## Evidence TODO
+- [ ] Native-speaker sign-off on "Vaddana" and the draft Telugu strings
+- [ ] Domain and trademark check (classes 9 and 42)
+- [ ] Pick the Latin typeface beside Noto Sans Telugu and Ramabhadra (Phase 0)
+- [ ] Pilot restaurant photos and permission
