@@ -64,10 +64,16 @@ export function ItemSheet({
   return (
     <Drawer onOpenChange={(open) => { if (!open) reset(); }}>
       <DrawerTrigger asChild>
-        {trigger ?? <Button type="button" variant="secondary">{t("menu.add")}</Button>}
+        {trigger ?? <Button type="button">{t("menu.add")}</Button>}
       </DrawerTrigger>
       {/* The sheet renders in a portal outside the page's lang fragment, so it declares its own. */}
       <DrawerContent lang={locale}>
+        {item.image && (
+          <div className="px-4 pt-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.image} alt="" className="aspect-4/3 w-full rounded-sheet object-cover" />
+          </div>
+        )}
         <DrawerHeader>
           <DrawerTitle lang={name?.lang} translate="no">{name?.text}</DrawerTitle>
           {description && <DrawerDescription lang={description.lang} translate="no">{description.text}</DrawerDescription>}

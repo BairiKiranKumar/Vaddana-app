@@ -9,6 +9,9 @@ import type {
   Quote,
   QuoteInput,
   Restaurant,
+  Diet,
+  Offer,
+  Review,
   StaffInput,
   Surface,
   TableView,
@@ -61,6 +64,10 @@ export interface DataRepo {
   inviteStaff(input: StaffInput, offline?: boolean): HouseView;
   setStaffActive(id: string, active: boolean, offline?: boolean): HouseView;
   setStaffLocale(id: string, locale: "te" | "en", offline?: boolean): HouseView;
+  saveOffer(offer: Offer, offline?: boolean): HouseView;
+  applyOffer(token: string, offerId: string | null, offline?: boolean): TableView;
+  saveReview(review: Review, offline?: boolean): HouseView;
+  saveCombo(input: { name_te: string; name_en: string; description_te: string; description_en: string; price: number; diet: Diet }, offline?: boolean): HouseView;
 }
 
 export function resolveDataSource(): DataSource {

@@ -6,11 +6,11 @@ import { LoaderCircle } from "lucide-react"
 
 // Sized by padding and min-height, never a fixed height, so stacked Telugu glyphs never clip.
 const buttonVariants = cva(
-  "inline-flex min-h-touch items-center justify-center gap-2 rounded-control border border-transparent px-4 py-2 text-base font-semibold text-balance text-center transition-[background-color,border-color,color] duration-(--duration-fast) ease-out select-none disabled:cursor-not-allowed aria-busy:cursor-progress [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0",
+  "inline-flex min-h-touch items-center justify-center gap-2 rounded-control border border-transparent px-4 py-2 text-base font-semibold text-balance text-center transition-[background-color,border-color,color,filter,transform] duration-(--duration-fast) ease-out select-none motion-safe:active:translate-y-px disabled:cursor-not-allowed aria-busy:cursor-progress [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-action text-on-action disabled:not-aria-busy:bg-ink-subtle",
+        primary: "bg-action text-on-action hover:brightness-95 disabled:not-aria-busy:bg-ink-subtle disabled:not-aria-busy:text-surface",
         secondary: "border-line-strong bg-surface text-ink hover:bg-wash active:bg-wash disabled:text-ink-subtle",
         quiet: "text-ink hover:bg-wash active:bg-wash disabled:text-ink-subtle",
         danger: "border-danger bg-surface text-danger hover:bg-wash active:bg-wash",

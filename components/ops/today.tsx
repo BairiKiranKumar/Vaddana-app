@@ -24,7 +24,7 @@ export function TodayView() {
       <h2 className="text-2xl font-semibold">{t("admin.today")}</h2>
       <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(([label, value]) => (
-          <li key={label} className="rounded-sheet border border-line bg-surface p-4">
+          <li key={label} className="rounded-sheet border border-line border-t-4 border-t-action bg-surface p-4 shadow-card">
             <p className="text-base text-ink-muted">{label}</p>
             <p className="text-3xl font-semibold">{value}</p>
           </li>

@@ -1,3 +1,4 @@
+import { annapurnaSeed, knownRestaurantIds } from "@/lib/data/platform/houses";
 import { quoteLine } from "@/lib/data/pricing";
 import { categories as catalogCategories, items as catalogItems, sampleRestaurant } from "@/lib/data/mock/menu";
 import {
@@ -12,6 +13,7 @@ import {
   type ItemInput,
   type MenuCategory,
   type MenuItem,
+  type Offer,
   type OrderRound,
   type OrderStatus,
   type PaymentMode,
@@ -21,6 +23,7 @@ import {
   type Quote,
   type QuoteInput,
   type Restaurant,
+  type Review,
   type Role,
   type StaffInput,
   type StaffMember,
@@ -58,6 +61,7 @@ export type Session = {
   prepaid: boolean;
   waiterCalled: boolean;
   billRequested: boolean;
+  offerId?: string | null;
 };
 
 type Row = { session: Session };
@@ -71,6 +75,8 @@ export type Snapshot = {
   desks: Desk[];
   staff: StaffMember[];
   sessions: [string, Session][];
+  offers?: Offer[];
+  reviews?: Review[];
 };
 
 type Memory = Snapshot & {
@@ -83,12 +89,38 @@ type Memory = Snapshot & {
 type Envelope = { type: "ask" } | { type: "state"; snapshot: Snapshot };
 
 const MEMORY = "__vaddanaHouse";
-const STORAGE = "vaddana-house-v1";
+
+let activeId = "srinidhi";
+
+export function activeRestaurantId() {
+  return activeId;
+}
+
+export function storageKeyFor(id: string) {
+  return id === "srinidhi" ? "vaddana-house-v1" : `vaddana-house-v1:${id}`;
+}
+
+export function activateRestaurant(id: string) {
+  if (!id || id === activeId) return;
+  activeId = id;
+  const g = globalThis as typeof globalThis & { [MEMORY]?: Memory };
+  delete g[MEMORY];
+}
+
+export function withRestaurant<T>(id: string, read: () => T): T {
+  const previous = activeId;
+  activateRestaurant(id);
+  try {
+    return read();
+  } finally {
+    activateRestaurant(previous);
+  }
+}
 
 function readStorage(): Snapshot | null {
   if (typeof localStorage === "undefined") return null;
   try {
-    const raw = localStorage.getItem(STORAGE);
+    const raw = localStorage.getItem(storageKeyFor(activeId));
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Snapshot;
     if (!parsed?.settings || !Array.isArray(parsed.sessions) || !Array.isArray(parsed.items) || !Array.isArray(parsed.staff)) return null;
@@ -101,7 +133,7 @@ function readStorage(): Snapshot | null {
 function persist() {
   if (typeof localStorage === "undefined") return;
   try {
-    localStorage.setItem(STORAGE, JSON.stringify(snapshot()));
+    localStorage.setItem(storageKeyFor(activeId), JSON.stringify(snapshot()));
   } catch {
     // A full local disk should not take the boards down. The tab still has the copy in memory.
   }
@@ -199,6 +231,36 @@ function seedSessions(): [string, Session][] {
 }
 
 function seed(): Snapshot {
+  if (activeId === "annapurna") return annapurnaSeed();
+  if (activeId !== "srinidhi") {
+    return {
+      revision: 1,
+      settings: {
+        id: activeId,
+        name_te: activeId,
+        name_en: activeId,
+        tagline_te: null,
+        tagline_en: null,
+        defaultLocale: "te",
+        gstin: "",
+        fssai: "",
+        taxMode: "none",
+        gstRate: 0,
+        upiId: "",
+        autoAccept: false,
+        payFirst: false,
+        logoDataUrl: null,
+      },
+      categories: [],
+      items: [],
+      areas: [],
+      desks: [],
+      staff: [],
+      sessions: [],
+      offers: [],
+      reviews: [],
+    };
+  }
   return {
     revision: 1,
     settings: structuredClone(sampleRestaurant),
@@ -227,14 +289,35 @@ function seed(): Snapshot {
       { id: "anita", name: "అనిత", role: "cook", locale: "te", active: true },
     ],
     sessions: seedSessions(),
+    offers: [],
+    reviews: [],
+  };
+}
+
+function fillCatalog(snap: Snapshot): Snapshot {
+  const offers = snap.offers ?? [];
+  const reviews = snap.reviews ?? [];
+  if (snap.settings.id === "annapurna" && offers.length === 0 && reviews.length === 0) {
+    const seeded = annapurnaSeed();
+    return { ...snap, offers: seeded.offers, reviews: seeded.reviews };
+  }
+  return { ...snap, offers, reviews };
+}
+
+function withCatalogPhotos(snap: Snapshot): Snapshot {
+  const photos = new Map(catalogItems.map((item) => [item.id, item.image]));
+  return {
+    ...snap,
+    items: snap.items.map((item) => (item.image ? item : { ...item, image: photos.get(item.id) })),
   };
 }
 
 function memory(): Memory {
   const g = globalThis as typeof globalThis & { [MEMORY]?: Memory };
   if (!g[MEMORY]) {
+    const stored = readStorage();
     g[MEMORY] = {
-      ...(readStorage() ?? seed()),
+      ...(stored ? withCatalogPhotos(fillCatalog(stored)) : seed()),
       tokenListeners: new Map(),
       houseListeners: new Set(),
       channel: null,
@@ -255,13 +338,15 @@ function snapshot(): Snapshot {
     desks: mem.desks,
     staff: mem.staff,
     sessions: mem.sessions,
+    offers: mem.offers ?? [],
+    reviews: mem.reviews ?? [],
   };
 }
 
 function channel(): BroadcastChannel | null {
   if (typeof BroadcastChannel === "undefined") return null;
   const mem = memory();
-  mem.channel ??= new BroadcastChannel("vaddana-tables");
+  mem.channel ??= new BroadcastChannel(`vaddana-tables:${activeId}`);
   return mem.channel;
 }
 
@@ -276,6 +361,8 @@ function adopt(next: Snapshot) {
   mem.desks = next.desks;
   mem.staff = next.staff;
   mem.sessions = next.sessions;
+  mem.offers = next.offers ?? [];
+  mem.reviews = next.reviews ?? [];
   persist();
   emitAll();
 }
@@ -436,7 +523,10 @@ function presentSession(token: string, session: Session): { view: TableView; ord
   });
   const billLines = orders.filter((entry) => entry.status !== "rejected").flatMap((entry) => entry.lines);
   const itemTotal = sum(billLines);
+  const offer = (memory().offers ?? []).find((entry) => entry.active && entry.id === session.offerId);
+  const discount = offer ? Math.min(itemTotal, Math.round((itemTotal * Math.min(30, offer.percent)) / 100)) : 0;
   const taxLines = taxFor(itemTotal, memory().settings);
+  if (offer && discount > 0) taxLines.push({ id: `offer-${offer.id}`, name_te: offer.name_te, name_en: offer.name_en, amount: -discount });
   const bill: Bill = {
     lines: billLines,
     itemTotal,
@@ -455,6 +545,8 @@ function presentSession(token: string, session: Session): { view: TableView; ord
     bill,
     waiterCalled: session.waiterCalled,
     billRequested: session.billRequested,
+    offers: memory().offers ?? [],
+    offerId: session.offerId ?? null,
   };
   return { view, orders, bill };
 }
@@ -568,13 +660,23 @@ export function presentHouse(): HouseView {
       byPayment: [...byPayment.entries()].map(([mode, total]) => ({ mode, total })),
     },
     records: records.sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+    offers: mem.offers ?? [],
+    reviews: mem.reviews ?? [],
   };
 }
 
 export function quote(input: QuoteInput): Quote {
-  const item = itemById(input.itemId);
+  const item = itemById(input.itemId) ?? itemFromAnyHouse(input.itemId);
   if (!item) throw new Error(`Unknown item ${input.itemId}`);
   return quoteLine(item, normalize(item, input));
+}
+
+function itemFromAnyHouse(id: string): MenuItem | undefined {
+  for (const restaurantId of knownRestaurantIds()) {
+    const found = peekSnapshot(restaurantId).items.find((entry) => entry.id === id);
+    if (found) return found;
+  }
+  return undefined;
 }
 
 function sessionOf(token: string): Session {
@@ -856,4 +958,100 @@ export function sendCart(token: string, session: Session) {
 
 export function isDiet(value: string): value is Diet {
   return value === "veg" || value === "nonveg";
+}
+
+export function peekSnapshot(id: string): Snapshot {
+  if (typeof localStorage !== "undefined") {
+    try {
+      const raw = localStorage.getItem(storageKeyFor(id));
+      if (raw) {
+        const parsed = JSON.parse(raw) as Snapshot;
+        if (parsed?.settings && Array.isArray(parsed.sessions) && Array.isArray(parsed.items)) {
+          return id === "srinidhi" ? withCatalogPhotos(fillCatalog(parsed)) : fillCatalog(parsed);
+        }
+      }
+    } catch {
+      // Fall through to the code seed.
+    }
+  }
+  const previous = activeId;
+  activeId = id;
+  const seeded = id === "srinidhi" ? withCatalogPhotos(seed()) : seed();
+  activeId = previous;
+  return seeded;
+}
+
+export function writeSnapshot(id: string, snap: Snapshot) {
+  if (typeof localStorage === "undefined") return;
+  localStorage.setItem(storageKeyFor(id), JSON.stringify(snap));
+  if (id === activeId) {
+    const g = globalThis as typeof globalThis & { [MEMORY]?: Memory };
+    delete g[MEMORY];
+  }
+}
+
+export function restaurantForToken(token: string): string | null {
+  if (!token || token === "expired") return null;
+  for (const id of knownRestaurantIds()) {
+    if (peekSnapshot(id).desks.some((desk) => desk.token === token)) return id;
+  }
+  return null;
+}
+
+export function restaurantForStaff(id: string): string | null {
+  for (const restaurantId of knownRestaurantIds()) {
+    if (peekSnapshot(restaurantId).staff.some((person) => person.id === id && person.active)) return restaurantId;
+  }
+  return null;
+}
+
+export function rosterAll(): StaffMember[] {
+  return knownRestaurantIds().flatMap((id) => {
+    const snap = peekSnapshot(id);
+    const restaurantName = snap.settings.name_en ?? snap.settings.name_te ?? id;
+    return snap.staff.filter((person) => person.active).map((person) => ({ ...person, restaurantName }));
+  });
+}
+
+export function saveOffer(offer: Offer) {
+  const mem = memory();
+  const offers = mem.offers ?? [];
+  const index = offers.findIndex((entry) => entry.id === offer.id);
+  const next = { ...offer, percent: Math.min(30, Math.max(0, Math.round(offer.percent))) };
+  if (index >= 0) offers[index] = next;
+  else offers.push(next);
+  mem.offers = offers;
+}
+
+export function applyOffer(session: Session, offerId: string | null) {
+  if (!offerId) {
+    session.offerId = null;
+    return;
+  }
+  const offer = (memory().offers ?? []).find((entry) => entry.id === offerId && entry.active);
+  if (offer) session.offerId = offer.id;
+}
+
+export function saveReview(review: Review) {
+  const mem = memory();
+  mem.reviews = [...(mem.reviews ?? []), review];
+}
+
+export function saveCombo(input: { name_te: string; name_en: string; description_te: string; description_en: string; price: number; diet: Diet }) {
+  const mem = memory();
+  if (!mem.categories.some((entry) => entry.id === "combos")) {
+    mem.categories.push({ id: "combos", name_te: "కాంబోలు", name_en: "Combos", sort: 0 });
+  }
+  mem.items.push({
+    id: `combo-${crypto.randomUUID().slice(0, 8)}`,
+    categoryId: "combos",
+    name_te: input.name_te.trim() || null,
+    name_en: input.name_en.trim() || null,
+    description_te: input.description_te.trim() || null,
+    description_en: input.description_en.trim() || null,
+    search: [input.name_en.trim().toLowerCase()].filter(Boolean),
+    price: Math.max(0, Math.round(input.price)),
+    diet: input.diet,
+    available: true,
+  });
 }

@@ -55,6 +55,14 @@
   }
 }
 
+/* Category chips scroll sideways; the bar itself is not content. */
+.menu-scroll {
+  scrollbar-width: none;
+}
+.menu-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* 80mm ticket and QR sheet. A paper width, not a design token. */
 .print-root {
   display: none;

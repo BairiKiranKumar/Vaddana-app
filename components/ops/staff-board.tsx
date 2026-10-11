@@ -69,7 +69,7 @@ export function StaffBoard() {
           <section key={title} aria-label={title} className="flex flex-col gap-3">
             <h2 className="text-lg font-semibold">{title}</h2>
             {tickets.length === 0 ? <p className="text-base text-ink-muted">{t("staff.empty")}</p> : tickets.map((ticket) => (
-              <article key={ticket.order.id} className="flex flex-col gap-3 rounded-sheet border border-line-strong bg-surface p-3">
+              <article key={ticket.order.id} className="flex flex-col gap-3 rounded-sheet border border-line bg-surface p-3 shadow-card">
                 <TicketBody ticket={ticket} />
                 {ticket.order.status === "sent" && (
                   <div className="grid grid-cols-2 gap-2">
@@ -88,7 +88,7 @@ export function StaffBoard() {
         <section aria-label={t("staff.bills")} className="flex flex-col gap-3">
           <h2 className="text-lg font-semibold">{t("staff.bills")}</h2>
           {house.bills.length === 0 ? <p className="text-base text-ink-muted">{t("staff.empty")}</p> : house.bills.map((card) => (
-            <article key={card.token} className="flex flex-col gap-3 rounded-sheet border border-line-strong bg-surface p-3">
+            <article key={card.token} className="flex flex-col gap-3 rounded-sheet border border-line bg-surface p-3 shadow-card">
               <p className="text-lg font-semibold">{t("table.label", { n: card.tableNumber })}</p>
               <p className="text-base text-ink-muted">{t(`payment.${card.bill.payment}` as MessageKey)}</p>
               <ul>

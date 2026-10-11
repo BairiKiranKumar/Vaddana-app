@@ -3,6 +3,7 @@ import type { MenuCategory, MenuItem, Restaurant } from "@/lib/data/types";
 // PLACEHOLDER menu for the in-memory restaurant. Not a real restaurant and not a pilot.
 // Dishes are common on Nizamabad / Hyderabad menus. Telugu spellings are drafts pending native review.
 // Prices are rupees, stored on the item. The repo turns them into line and bill totals.
+// Dish photos in public/menu are generated stand-ins, not photographs from a restaurant.
 
 export const sampleRestaurant: Restaurant = {
   id: "srinidhi",
@@ -33,6 +34,7 @@ export const categories: MenuCategory[] = [
 export const items: MenuItem[] = [
   {
     id: "idli",
+    image: "/menu/idli.jpg",
     categoryId: "tiffin",
     name_te: "ఇడ్లీ",
     name_en: "Idli",
@@ -45,6 +47,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "mysore-bajji",
+    image: "/menu/mysore-bajji.jpg",
     categoryId: "tiffin",
     name_te: "మైసూర్ బజ్జీ",
     name_en: "Mysore bajji",
@@ -57,6 +60,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "poori-perugu",
+    image: "/menu/poori-perugu.jpg",
     categoryId: "tiffin",
     name_te: "పూరీ పెరుగు",
     name_en: "Poori with curd",
@@ -69,6 +73,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "sarva-pindi",
+    image: "/menu/sarva-pindi.jpg",
     categoryId: "tiffin",
     name_te: "సర్వపిండి",
     name_en: "Sarva pindi",
@@ -81,6 +86,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "telangana-meals",
+    image: "/menu/telangana-meals.jpg",
     categoryId: "meals",
     // Longest name on the menu: the Telugu wrapping stress test.
     name_te: "తెలంగాణ శాకాహార భోజనం (పచ్చిపులుసు, ముద్దపప్పు, నెయ్యి)",
@@ -94,6 +100,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "chicken-biryani",
+    image: "/menu/chicken-biryani.jpg",
     categoryId: "biryani",
     name_te: "చికెన్ దమ్ బిర్యానీ",
     name_en: "Chicken dum biryani",
@@ -118,6 +125,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "mutton-biryani",
+    image: "/menu/mutton-biryani.jpg",
     categoryId: "biryani",
     name_te: "మటన్ బిర్యానీ",
     name_en: "Mutton biryani",
@@ -130,6 +138,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "natu-kodi-pulusu",
+    image: "/menu/natu-kodi-pulusu.jpg",
     categoryId: "curries",
     name_te: "నాటు కోడి పులుసు",
     name_en: "Natu kodi pulusu",
@@ -154,6 +163,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "gongura-kodi",
+    image: "/menu/gongura-kodi.jpg",
     categoryId: "curries",
     name_te: "గోంగూర కోడి",
     name_en: "Gongura chicken",
@@ -166,6 +176,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "paneer-butter-masala",
+    image: "/menu/paneer-butter-masala.jpg",
     categoryId: "curries",
     // Telugu name intentionally missing: the menu must fall back to English, never a blank line.
     name_te: null,
@@ -179,6 +190,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "jonna-rotte",
+    image: "/menu/jonna-rotte.jpg",
     categoryId: "breads",
     name_te: "జొన్న రొట్టె",
     name_en: "Jonna rotte",
@@ -191,6 +203,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "chapati",
+    image: "/menu/chapati.jpg",
     categoryId: "breads",
     name_te: "చపాతీ",
     name_en: "Chapati",
@@ -203,6 +216,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "chai",
+    image: "/menu/chai.jpg",
     categoryId: "drinks",
     name_te: "చాయ్",
     name_en: "Chai",
@@ -215,6 +229,7 @@ export const items: MenuItem[] = [
   },
   {
     id: "majjiga",
+    image: "/menu/majjiga.jpg",
     categoryId: "drinks",
     name_te: "మజ్జిగ",
     name_en: "Majjiga",

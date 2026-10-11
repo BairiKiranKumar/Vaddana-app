@@ -18,6 +18,8 @@ export type SheetItem = {
   description_te: string | null;
   description_en: string | null;
   price: number;
+  /** Public path to a dish photo. Decorative beside the name. */
+  image?: string;
   variants?: PricedChoice[];
   addons?: { min?: number; max: number; options: PricedChoice[] };
 };
@@ -150,6 +152,8 @@ export type TableView = {
   bill: Bill;
   waiterCalled: boolean;
   billRequested: boolean;
+  offers: Offer[];
+  offerId: string | null;
 };
 
 export type DataErrorCode = "denied" | "session_expired" | "failed";
@@ -165,6 +169,27 @@ export type StaffMember = {
   role: Role;
   locale: "te" | "en";
   active: boolean;
+  /** Set on the sign-in roster when several restaurants are listed together. */
+  restaurantName?: string;
+};
+
+export type Offer = {
+  id: string;
+  name_te: string;
+  name_en: string;
+  /** Whole percent, applied by the repo only after the diner opts in. */
+  percent: number;
+  active: boolean;
+};
+
+export type Review = {
+  id: string;
+  author: string;
+  rating: number;
+  body: string;
+  createdAt: string;
+  /** Sample copy, not a real diner. */
+  sample: boolean;
 };
 
 export type Area = {
@@ -247,6 +272,8 @@ export type HouseView = {
   bills: BillCard[];
   today: Today;
   records: OrderRecord[];
+  offers: Offer[];
+  reviews: Review[];
 };
 
 export type HouseResult =

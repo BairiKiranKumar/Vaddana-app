@@ -154,7 +154,7 @@ export function MenuEditor() {
 
       {draft && (
         <form
-          className="flex flex-col gap-3 rounded-sheet border border-line-strong bg-surface p-4"
+          className="flex flex-col gap-3 rounded-sheet border border-line bg-surface p-4 shadow-card"
           onSubmit={(event) => {
             event.preventDefault();
             save();

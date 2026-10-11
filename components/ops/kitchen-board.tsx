@@ -23,7 +23,7 @@ export function KitchenBoard() {
         <ul className="grid items-start gap-4 lg:grid-cols-2">
           {tickets.map((ticket) => (
             <li key={ticket.order.id}>
-              <article className="flex flex-col gap-4 rounded-sheet border border-line-strong bg-surface p-4">
+              <article className="flex flex-col gap-4 rounded-sheet border border-line border-l-4 border-l-action bg-surface p-4 shadow-card">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h2 className="text-3xl font-semibold">{t("table.label", { n: ticket.tableNumber })}</h2>
                   <p className="text-xl text-ink-muted">{t("staff.minutes", { n: ticket.minutes })}</p>

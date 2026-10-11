@@ -20,8 +20,7 @@ export function MenuSkeleton({ i18n: { t }, rows = 3, labelled = true }: { i18n:
       {labelled && <span className="sr-only">{t("state.loading")}</span>}
       <ul aria-hidden>
         {Array.from({ length: rows }, (_, i) => (
-          <li key={i} className="flex gap-3 border-b border-line py-4 last:border-b-0">
-            <span className="mt-1 size-4 shrink-0 rounded-control bg-wash" />
+          <li key={i} className="mb-3 flex gap-3 rounded-sheet bg-surface p-3 shadow-card last:mb-0">
             <div className="flex flex-1 flex-col gap-2">
               <span className="h-6 w-3/4 rounded-control bg-wash" />
               <span className="h-4 w-full rounded-control bg-wash" />
@@ -30,6 +29,7 @@ export function MenuSkeleton({ i18n: { t }, rows = 3, labelled = true }: { i18n:
                 <span className="h-11 w-24 rounded-control bg-wash" />
               </div>
             </div>
+            <span className="size-24 shrink-0 rounded-control bg-wash" />
           </li>
         ))}
       </ul>

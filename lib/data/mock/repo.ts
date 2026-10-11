@@ -1,15 +1,17 @@
+import { isSuspended } from "@/lib/data/platform/houses";
 import type { DataRepo, MockMode } from "@/lib/data/repo";
 import type { DataErrorCode, HouseResult, Surface } from "@/lib/data/types";
 import {
+  activateRestaurant,
   addCategory,
   addDesk,
   addLine,
   allowed,
+  applyOffer,
   bulkPrice,
   changeHouse,
   changeTable,
   confirmOrder,
-  deskFor,
   ensureTable,
   inviteStaff,
   markPaid,
@@ -23,8 +25,14 @@ import {
   presentTable,
   quote,
   rejectOrder,
+  restaurantForStaff,
+  restaurantForToken,
+  rosterAll,
   rotateDesk,
+  saveCombo,
   saveItem,
+  saveOffer,
+  saveReview,
   saveSettings,
   sendCart,
   setAvailable,
@@ -41,7 +49,9 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function gate(token: string): DataErrorCode | null {
   if (token === "expired") return "session_expired";
-  if (!deskFor(token)) return "denied";
+  const owner = restaurantForToken(token);
+  if (!owner || isSuspended(owner)) return "denied";
+  activateRestaurant(owner);
   return null;
 }
 
@@ -240,15 +250,37 @@ export function createMockRepo(): DataRepo {
     setStaffLocale(id, locale, offline = false) {
       return changeHouse(() => setStaffLocale(id, locale), offline);
     },
+
+    saveOffer(offer, offline = false) {
+      return changeHouse(() => saveOffer(offer), offline);
+    },
+
+    applyOffer(token, offerId, offline = false) {
+      return changeTable(token, (session) => {
+        applyOffer(session, offerId);
+        return session;
+      }, offline);
+    },
+
+    saveReview(review, offline = false) {
+      return changeHouse(() => saveReview(review), offline);
+    },
+
+    saveCombo(input, offline = false) {
+      return changeHouse(() => saveCombo(input), offline);
+    },
   };
 }
 
 async function openHouse(staffId: string | null, surface: Surface, mode: MockMode | null): Promise<HouseResult> {
   if (mode === "fail") return { ok: false, error: "failed" };
   if (mode === "slow") await delay(SLOW_MS);
-  const roster = presentHouse().staff.filter((person) => person.active);
+  if (staffId) {
+    const owner = restaurantForStaff(staffId);
+    if (owner) activateRestaurant(owner);
+  }
   const member = memberById(staffId);
-  if (!member) return { ok: false, error: "session_expired", roster };
+  if (!member) return { ok: false, error: "session_expired", roster: rosterAll() };
   if (!allowed(member.role, surface)) return { ok: false, error: "denied" };
   return { ok: true, house: presentHouse(), member };
 }

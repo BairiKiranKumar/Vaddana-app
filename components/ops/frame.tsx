@@ -122,9 +122,13 @@ export function HouseProvider({
 
 const links: [string, MessageKey][] = [
   ["/admin", "admin.today"],
+  ["/admin/analytics", "admin.analytics"],
   ["/admin/menu", "admin.menu"],
+  ["/admin/combos", "admin.combos"],
+  ["/admin/offers", "admin.offers"],
   ["/admin/tables", "admin.tables"],
   ["/admin/orders", "admin.orders"],
+  ["/admin/reviews", "admin.reviews"],
   ["/admin/staff", "admin.staff"],
   ["/admin/settings", "admin.settings"],
 ];
@@ -197,7 +201,10 @@ export function OpsFrame({
                     .then(() => router.refresh());
                 }}
               >
-                <span lang={person.locale === "te" ? "te" : "en"} translate="no">{person.name}</span>
+                <span className="flex flex-col items-start">
+                  <span lang={person.locale === "te" ? "te" : "en"} translate="no">{person.name}</span>
+                  {person.restaurantName && <span className="text-sm text-ink-muted" translate="no">{person.restaurantName}</span>}
+                </span>
                 <span className="text-ink-muted">{t(`role.${person.role}` as MessageKey)}</span>
               </Button>
             </li>
@@ -243,7 +250,7 @@ function FrameBody({
         {t("nav.skip")}
       </a>
       {nav && (
-        <nav aria-label={t("home.surfaces")} className="app-chrome flex gap-2 overflow-x-auto border-b border-line px-2 lg:flex-col lg:border-r lg:border-b-0 lg:px-3 lg:py-4">
+        <nav aria-label={t("home.surfaces")} className="app-chrome flex gap-2 overflow-x-auto border-b border-line bg-surface px-2 lg:flex-col lg:border-r lg:border-b-0 lg:bg-surface lg:px-3 lg:py-4">
           {links.map(([href, key]) => {
             const current = href === "/admin" ? path === "/admin" : path.startsWith(href);
             return (

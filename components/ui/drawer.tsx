@@ -30,7 +30,7 @@ function DrawerContent({ className, children, ...props }: React.ComponentProps<t
         data-slot="drawer-content"
         // 90dvh cap keeps the page edge visible above the sheet; a layout constraint, not a design token.
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[90dvh] w-full max-w-md flex-col rounded-t-sheet bg-surface text-ink shadow-sheet overscroll-contain pb-[env(safe-area-inset-bottom)]",
+          "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[90dvh] w-full max-w-lg flex-col rounded-t-sheet bg-surface text-ink shadow-sheet overscroll-contain pb-[env(safe-area-inset-bottom)]",
           className
         )}
         {...props}

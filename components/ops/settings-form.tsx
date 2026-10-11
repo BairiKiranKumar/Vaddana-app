@@ -103,7 +103,7 @@ function Form({
       </label>
       <div className="flex flex-col gap-1">
         <span className={labelClass}>{i18n.t("admin.brand")}</span>
-        <span className="inline-flex size-11 rounded-control bg-accent" aria-hidden />
+        <span className="inline-flex size-11 rounded-control bg-action" aria-hidden />
         <p className="text-base text-ink-muted">{i18n.t("admin.brandLocked")}</p>
       </div>
       <div className="flex items-center gap-3">

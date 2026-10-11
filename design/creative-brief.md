@@ -65,9 +65,9 @@ See `../design.md` section 8 for each surface's screens. Marketing site (Phase 5
 
 ## 5. System decisions
 **Type roles:** UI/body Noto Sans Telugu + Latin grotesk TBD (tabular numerals, not Inter by default); display Ramabhadra; editorial Tiro Telugu (marketing only). Telugu line height ≥ 1.6. No letter-spacing, all-caps or faux bold on Telugu.
-**Colour roles:** in `tokens.json` (from design.md section 7, contrast-fixed: ink-3 and warn darkened to pass AA; input borders use opaque `lineStrong`; see `DECISIONS.md`).
-**Visual motif:** ink and paper, one indigo accent; one Telangana craft reference on marketing and print only.
-**Image direction:** real dishes and real restaurants; no clipart, leaves, rangoli, temples.
+**Colour roles:** in `tokens.json`. Kiran, 12 Oct 2026, replaced indigo-on-paper with cream, white cards, charcoal and coral. Veg green and non-veg brown stay reserved. See `DECISIONS.md`.
+**Visual motif:** warm cream, white photo cards, one coral accent. A Telangana craft reference stays on marketing and print only.
+**Image direction:** dish photography on the menu. The sample menu uses generated stand-in photos until a pilot supplies real ones. No clipart, leaves, rangoli or temples.
 **Voice:** short, human, Telangana Telugu as spoken (English loanwords fine); no em dashes in UI copy.
 **Signature moment:** marketing site only; PLACEHOLDER until Phase 5 (`motion-spec.md`).
 **Reduced motion/mobile:** every surface drops to opacity fades or none (design.md section 6 budgets).

@@ -18,6 +18,11 @@ import { setDinerLocale } from "../../locale";
 
 const SLOW_NOTICE_MS = 3000;
 
+function mark(text: string) {
+  const first = new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)[Symbol.iterator]().next().value;
+  return first?.segment ?? "";
+}
+
 type ViewName = "menu" | "cart" | "status" | "bill";
 
 type Props = {
@@ -70,13 +75,24 @@ function Session({ token, source, mode, locale, initial }: Props) {
       });
     };
 
-    if (attempt === 0 && initial) {
-      if (initial.ok) {
-        void repo.openTable(token, null).then((next) => {
-          if (!cancel && next.ok) setResult(next);
-        });
-        follow();
-      }
+    if (attempt === 0 && initial?.ok) {
+      void repo.openTable(token, null).then((next) => {
+        if (!cancel && next.ok) setResult(next);
+      });
+      follow();
+      return () => {
+        cancel = true;
+        unsub();
+      };
+    }
+
+    if (attempt === 0 && initial && !initial.ok && initial.error === "denied") {
+      void repo.openTable(token, null).then((next) => {
+        if (cancel) return;
+        setLoading(false);
+        setResult(next);
+        if (next.ok) follow();
+      });
       return () => {
         cancel = true;
         unsub();
@@ -158,15 +174,21 @@ function Session({ token, source, mode, locale, initial }: Props) {
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-control focus:bg-surface focus:px-4 focus:py-2">
         {i18n.t("nav.skip")}
       </a>
-      <header className="flex shrink-0 items-start justify-between gap-3 px-4 pt-4 pb-3">
-        <div className="min-w-0">
-          {view.restaurant.logoDataUrl && (
+      <header className="flex shrink-0 items-start justify-between gap-3 bg-linear-to-b from-glow to-paper px-4 pt-4 pb-3">
+        <div className="flex min-w-0 items-start gap-3">
+          {view.restaurant.logoDataUrl ? (
             // Data URLs from the owner's upload are not a remote image next/image can optimize.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={view.restaurant.logoDataUrl} alt="" className="mb-2 size-12 rounded-control object-cover" />
+            <img src={view.restaurant.logoDataUrl} alt="" className="size-14 shrink-0 rounded-sheet object-cover shadow-card" />
+          ) : (
+            <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-sheet bg-action text-xl font-semibold text-on-action shadow-card">
+              {mark(name?.text ?? "")}
+            </span>
           )}
-          <h1 lang={name?.lang} translate="no" className="text-xl font-semibold leading-heading break-words">{name?.text}</h1>
-          <p className="text-base text-ink-muted">{i18n.t("table.label", { n: view.table.number })}</p>
+          <div className="min-w-0">
+            <h1 lang={name?.lang} translate="no" className={`font-semibold break-words ${name?.lang === "te" ? "text-2xl leading-heading-te" : "text-xl leading-heading"}`}>{name?.text}</h1>
+            <p className="mt-1 inline-flex min-h-touch items-center rounded-full bg-surface px-3 text-base font-semibold shadow-card">{i18n.t("table.label", { n: view.table.number })}</p>
+          </div>
         </div>
         <div className="shrink-0">
           <LanguageSwitch
@@ -194,6 +216,7 @@ function Session({ token, source, mode, locale, initial }: Props) {
             onQuery={setQuery}
             offline={offline}
             onAdd={(draft) => commit(repo().addLine(token, draft, offline))}
+            onApplyOffer={(offerId) => commit(repo().applyOffer(token, offerId, offline))}
             quote={(itemId, draft) => repo().quote({ itemId, ...draft })}
           />
         )}
@@ -228,9 +251,9 @@ function Session({ token, source, mode, locale, initial }: Props) {
         )}
       </main>
 
-      <footer className="flex shrink-0 flex-col gap-2 border-t border-line bg-paper px-4 pt-3 pb-[max(env(safe-area-inset-bottom),var(--space-3))]">
+      <footer className="flex shrink-0 flex-col gap-2 bg-surface px-4 pt-3 shadow-sheet pb-[max(env(safe-area-inset-bottom),var(--space-3))]">
         {viewName === "menu" && view.cart.count > 0 && (
-          <Button type="button" size="block" variant="secondary" onClick={() => setViewName("cart")}>
+          <Button type="button" size="block" className="justify-between" onClick={() => setViewName("cart")}>
             <span>{i18n.tn("cart.items", view.cart.count)}</span>
             <span>{formatPrice(view.cart.total)}</span>
           </Button>
@@ -267,20 +290,20 @@ function Session({ token, source, mode, locale, initial }: Props) {
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto flex h-dvh w-full max-w-md flex-col bg-paper">{children}</div>;
+  return <div className="mx-auto flex h-dvh w-full max-w-lg flex-col bg-paper">{children}</div>;
 }
 
 function CategoryNav({ view, query }: { view: TableView; query: string }) {
   const { locale, t } = useT();
   return (
-    <nav aria-label={t("menu.sections")} className="w-full min-w-0 shrink-0 overflow-x-auto border-b border-line">
-      <ul className="flex w-max gap-1 px-2">
+    <nav aria-label={t("menu.sections")} className="menu-scroll w-full min-w-0 shrink-0 overflow-x-auto px-4 py-2">
+      <ul className="flex w-max gap-2">
         {view.categories.map((category) => {
           const label = pickLocalized(locale, category.name_te, category.name_en);
           if (!view.items.some((item) => item.categoryId === category.id && matches(item, query))) return null;
           return (
             <li key={category.id}>
-              <a href={`#cat-${category.id}`} lang={label?.lang} className="inline-flex min-h-touch items-center px-3 text-base font-semibold whitespace-nowrap text-ink-muted">
+              <a href={`#cat-${category.id}`} lang={label?.lang} className="inline-flex min-h-touch items-center rounded-full bg-surface px-4 text-base font-semibold whitespace-nowrap shadow-card hover:bg-wash">
                 {label?.text}
               </a>
             </li>
@@ -298,6 +321,7 @@ function MenuPanel({
   onQuery,
   offline,
   onAdd,
+  onApplyOffer,
   quote,
 }: {
   view: TableView;
@@ -306,6 +330,7 @@ function MenuPanel({
   onQuery: (value: string) => void;
   offline: boolean;
   onAdd: (draft: LineDraft) => void;
+  onApplyOffer: (offerId: string | null) => void;
   quote: (itemId: string, draft: Pick<LineDraft, "variantId" | "addonIds" | "qty">) => { lineTotal: number };
 }) {
   const { locale, t } = i18n;
@@ -325,9 +350,22 @@ function MenuPanel({
           value={query}
           onChange={(event) => onQuery(event.target.value)}
           placeholder={t("menu.search.placeholder")}
-          className={controlClass}
+          className="min-h-touch w-full rounded-sheet border border-line bg-surface px-4 py-2 text-base text-ink shadow-card placeholder:text-ink-subtle"
         />
       </div>
+      {view.offers.filter((offer) => offer.active).map((offer) => {
+        const name = pickLocalized(locale, offer.name_te, offer.name_en);
+        const applied = view.offerId === offer.id;
+        return (
+          <div key={offer.id} className="flex flex-col gap-2 rounded-sheet bg-surface p-3 shadow-card">
+            <p lang={name?.lang} className="text-base font-semibold" translate="no">{name?.text} · {offer.percent}%</p>
+            <p className="text-sm text-ink-muted">{t("offer.simulated")}</p>
+            <Button type="button" variant={applied ? "secondary" : "primary"} disabled={offline} onClick={() => onApplyOffer(applied ? null : offer.id)}>
+              {t(applied ? "offer.remove" : "offer.apply")}
+            </Button>
+          </div>
+        );
+      })}
       {groups.length === 0 ? (
         <BlockMessage title={t("state.emptySearch.title")} body={t("state.emptySearch.body")} />
       ) : (
@@ -336,12 +374,13 @@ function MenuPanel({
           const rows = visible.filter((item) => item.categoryId === category.id);
           return (
             <section key={category.id} id={`cat-${category.id}`} aria-labelledby={`cat-${category.id}-title`}>
-              <h2 id={`cat-${category.id}-title`} lang={heading?.lang} className="text-lg font-semibold">{heading?.text}</h2>
-              <ul>
-                {rows.map((item) => (
+              <h2 id={`cat-${category.id}-title`} lang={heading?.lang} className={`font-semibold ${heading?.lang === "te" ? "text-xl leading-heading-te" : "text-lg leading-heading"}`}>{heading?.text}</h2>
+              <ul className="mt-3 flex flex-col gap-3">
+                {rows.map((item, index) => (
                   <ItemRow
                     key={item.id}
                     item={item}
+                    eager={index === 0 && category.id === groups[0]?.id}
                     i18n={i18n}
                     action={
                       offline ? (
@@ -471,8 +510,14 @@ function CartLine({
   const name = pickLocalized(locale, line.name_te, line.name_en);
   const detail = pickLocalized(locale, line.detail_te, line.detail_en);
   return (
-    <li className="flex flex-col gap-2 border-b border-line py-4">
-      <p lang={name?.lang} translate="no" className="text-lg font-semibold leading-heading break-words">{name?.text}</p>
+    <li className="flex flex-col gap-2 rounded-sheet bg-surface p-3 shadow-card">
+      <div className="flex items-start gap-3">
+        {item?.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.image} alt="" className="size-16 shrink-0 rounded-control object-cover" />
+        )}
+        <p lang={name?.lang} translate="no" className={`font-semibold break-words ${name?.lang === "te" ? "text-xl leading-heading-te" : "text-lg leading-heading"}`}>{name?.text}</p>
+      </div>
       {detail && <p lang={detail.lang} translate="no" className="text-base text-ink-muted">{detail.text}</p>}
       {line.notes && <p className="text-base text-ink-muted break-words">{line.notes}</p>}
       {!line.available && <p className="text-base font-semibold text-ink-muted">{t("item.unavailable")}</p>}
@@ -652,6 +697,7 @@ function BillPanel({
               <Button type="button" size="block" variant="secondary" disabled={!canPay} onClick={onCounter}>{t("bill.payCounter")}</Button>
             </div>
           )}
+          <p className="text-sm text-ink-muted">{t("payment.simulated")}</p>
         </>
       )}
     </div>
