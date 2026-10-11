@@ -72,7 +72,9 @@ function Session({ token, source, mode, locale, initial }: Props) {
 
     if (attempt === 0 && initial) {
       if (initial.ok) {
-        void repo.openTable(token, null);
+        void repo.openTable(token, null).then((next) => {
+          if (!cancel && next.ok) setResult(next);
+        });
         follow();
       }
       return () => {
@@ -158,6 +160,11 @@ function Session({ token, source, mode, locale, initial }: Props) {
       </a>
       <header className="flex shrink-0 items-start justify-between gap-3 px-4 pt-4 pb-3">
         <div className="min-w-0">
+          {view.restaurant.logoDataUrl && (
+            // Data URLs from the owner's upload are not a remote image next/image can optimize.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={view.restaurant.logoDataUrl} alt="" className="mb-2 size-12 rounded-control object-cover" />
+          )}
           <h1 lang={name?.lang} translate="no" className="text-xl font-semibold leading-heading break-words">{name?.text}</h1>
           <p className="text-base text-ink-muted">{i18n.t("table.label", { n: view.table.number })}</p>
         </div>
@@ -204,6 +211,7 @@ function Session({ token, source, mode, locale, initial }: Props) {
               commit(next);
               if (next.orders.length > view.orders.length) setViewName("status");
             }}
+            onPrepay={() => commit(repo().prepay(token, offline))}
             quote={(itemId, draft) => repo().quote({ itemId, ...draft })}
           />
         )}
@@ -362,6 +370,7 @@ function CartPanel({
   onRemove,
   onUpdate,
   onSend,
+  onPrepay,
   quote,
 }: {
   view: TableView;
@@ -372,6 +381,7 @@ function CartPanel({
   onRemove: (lineId: string) => void;
   onUpdate: (lineId: string, draft: LineDraft) => void;
   onSend: () => void;
+  onPrepay: () => void;
   quote: (itemId: string, draft: Pick<LineDraft, "variantId" | "addonIds" | "qty">) => { lineTotal: number };
 }) {
   const { t } = i18n;
@@ -424,7 +434,15 @@ function CartPanel({
               <span>{t("cart.total")}</span>
               <span>{formatPrice(view.cart.total)}</span>
             </p>
-            <Button type="button" size="block" disabled={offline || !view.cart.canSend} onClick={onSend}>{t("cart.send")}</Button>
+            {view.cart.holdForPayment ? (
+              <>
+                <p className="text-base">{t("cart.payFirst")}</p>
+                <Button type="button" size="block" disabled={offline} onClick={onPrepay}>{t("bill.payUpi")}</Button>
+                <Button type="button" size="block" variant="secondary" disabled={offline} onClick={onPrepay}>{t("bill.payCounter")}</Button>
+              </>
+            ) : (
+              <Button type="button" size="block" disabled={offline || !view.cart.canSend} onClick={onSend}>{t("cart.send")}</Button>
+            )}
           </div>
         </>
       )}
@@ -563,7 +581,8 @@ function BillPanel({
 }) {
   const { locale, t } = i18n;
   const { bill } = view;
-  const canPay = !offline && bill.lines.length > 0 && bill.payment !== "at_counter";
+  const canPay = !offline && bill.lines.length > 0 && bill.payment !== "at_counter" && bill.payment !== "paid";
+  const paidMode = bill.paymentMode ? t(`payment.${bill.paymentMode}` as "payment.cash") : t("payment.paid");
 
   return (
     <div className="flex flex-col gap-6 py-4">
@@ -579,6 +598,13 @@ function BillPanel({
         </div>
       ) : (
         <>
+          {(view.restaurant.gstin || view.restaurant.fssai || view.restaurant.upiId) && (
+            <div className="flex flex-col gap-1 text-base text-ink-muted">
+              {view.restaurant.gstin && <p>{t("bill.gstin", { value: view.restaurant.gstin })}</p>}
+              {view.restaurant.fssai && <p>{t("bill.fssai", { value: view.restaurant.fssai })}</p>}
+              {view.restaurant.upiId && <p>{t("bill.upi", { value: view.restaurant.upiId })}</p>}
+            </div>
+          )}
           <ul>
             {bill.lines.map((line) => {
               const name = pickLocalized(locale, line.name_te, line.name_en);
@@ -619,7 +645,8 @@ function BillPanel({
           {bill.payment === "pending" && <p role="status" className="text-base text-warn">{t("bill.pending")}</p>}
           {bill.payment === "failed" && <BlockMessage title={t("bill.failed.title")} body={t("bill.failed.body")} />}
           {bill.payment === "at_counter" && <p role="status" className="text-base">{t("bill.atCounter")}</p>}
-          {bill.payment !== "at_counter" && (
+          {bill.payment === "paid" && <p role="status" className="text-base text-ok">{t("bill.paid", { mode: paidMode })}</p>}
+          {bill.payment !== "at_counter" && bill.payment !== "paid" && (
             <div className="flex flex-col gap-2">
               <Button type="button" size="block" disabled={!canPay || bill.payment === "pending"} onClick={onUpi}>{t("bill.payUpi")}</Button>
               <Button type="button" size="block" variant="secondary" disabled={!canPay} onClick={onCounter}>{t("bill.payCounter")}</Button>

@@ -54,3 +54,19 @@
     color: var(--color-ink);
   }
 }
+
+/* 80mm ticket and QR sheet. A paper width, not a design token. */
+.print-root {
+  display: none;
+}
+
+@media print {
+  .app-chrome {
+    display: none !important;
+  }
+
+  .print-root {
+    display: block;
+    width: 80mm;
+  }
+}

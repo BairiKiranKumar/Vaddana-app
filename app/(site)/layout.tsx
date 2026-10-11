@@ -4,7 +4,7 @@ import { ramabhadra } from "@/lib/display-font";
 import { dinerFontClasses } from "@/lib/fonts";
 import "../globals.css";
 
-// Dev pages (home, component preview). The diner route group has its own root layout.
+// Marketing home. Diner, staff, kitchen and admin each have their own root layout.
 export const metadata: Metadata = {
   title: "Vaddana",
   description: "QR table ordering for restaurants in Nizamabad. Telugu and English.",
@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${dinerFontClasses} ${ramabhadra.variable}`}>
+    <html lang="te" className={`${dinerFontClasses} ${ramabhadra.variable}`}>
       <body>{children}</body>
     </html>
   );

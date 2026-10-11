@@ -37,6 +37,8 @@ export type MenuCategory = {
   sort: number;
 };
 
+export type TaxMode = "none" | "gst";
+
 export type Restaurant = {
   id: string;
   name_te: string | null;
@@ -44,6 +46,16 @@ export type Restaurant = {
   tagline_te: string | null;
   tagline_en: string | null;
   defaultLocale: "te" | "en";
+  gstin: string;
+  fssai: string;
+  /** `gst` adds a CGST/SGST split in the repo. `none` leaves tax lines empty. */
+  taxMode: TaxMode;
+  /** Percent the owner typed. The repo applies it. The UI does not. */
+  gstRate: number;
+  upiId: string;
+  autoAccept: boolean;
+  payFirst: boolean;
+  logoDataUrl: string | null;
 };
 
 export type TableInfo = {
@@ -91,6 +103,8 @@ export type Cart = {
   count: number;
   total: number;
   canSend: boolean;
+  /** Restaurant asks for payment before this cart can go to the kitchen. */
+  holdForPayment: boolean;
 };
 
 export type OrderStatus = "sent" | "confirmed" | "preparing" | "ready" | "served" | "rejected";
@@ -114,7 +128,8 @@ export type TaxLine = {
   amount: number;
 };
 
-export type PaymentStatus = "unpaid" | "pending" | "failed" | "at_counter";
+export type PaymentStatus = "unpaid" | "pending" | "failed" | "at_counter" | "paid";
+export type PaymentMode = "cash" | "upi" | "counter" | null;
 
 export type Bill = {
   lines: PricedLine[];
@@ -122,6 +137,7 @@ export type Bill = {
   taxLines: TaxLine[];
   total: number;
   payment: PaymentStatus;
+  paymentMode: PaymentMode;
 };
 
 export type TableView = {
@@ -139,3 +155,129 @@ export type TableView = {
 export type DataErrorCode = "denied" | "session_expired" | "failed";
 
 export type OpenResult = { ok: true; view: TableView } | { ok: false; error: DataErrorCode };
+
+export type Role = "owner" | "captain" | "waiter" | "cook";
+export type Surface = "staff" | "kitchen" | "admin";
+
+export type StaffMember = {
+  id: string;
+  name: string;
+  role: Role;
+  locale: "te" | "en";
+  active: boolean;
+};
+
+export type Area = {
+  id: string;
+  name_te: string | null;
+  name_en: string | null;
+};
+
+export type Desk = {
+  id: string;
+  token: string;
+  number: number;
+  areaId: string;
+  seats: number;
+};
+
+export type Ticket = {
+  token: string;
+  tableNumber: number;
+  order: OrderRound;
+  minutes: number;
+};
+
+export type BillCard = {
+  token: string;
+  tableNumber: number;
+  bill: Bill;
+  minutes: number;
+};
+
+export type Alert = {
+  token: string;
+  tableNumber: number;
+  kind: "waiter" | "bill";
+};
+
+export type TopItem = {
+  itemId: string;
+  name_te: string | null;
+  name_en: string | null;
+  qty: number;
+  total: number;
+};
+
+export type Today = {
+  sales: number;
+  orderCount: number;
+  averageBill: number;
+  openTables: number;
+  topItems: TopItem[];
+  byHour: { hour: number; total: number }[];
+  byPayment: { mode: "cash" | "upi" | "counter"; total: number }[];
+};
+
+export type OrderRecord = {
+  id: string;
+  token: string;
+  tableNumber: number;
+  status: OrderStatus;
+  payment: PaymentStatus;
+  paymentMode: PaymentMode;
+  total: number;
+  createdAt: string;
+  lines: PricedLine[];
+  notes: string;
+};
+
+export type HouseView = {
+  settings: Restaurant;
+  categories: MenuCategory[];
+  items: MenuItem[];
+  areas: Area[];
+  desks: Desk[];
+  staff: StaffMember[];
+  alerts: Alert[];
+  incoming: Ticket[];
+  confirmed: Ticket[];
+  ready: Ticket[];
+  kitchen: Ticket[];
+  bills: BillCard[];
+  today: Today;
+  records: OrderRecord[];
+};
+
+export type HouseResult =
+  | { ok: true; house: HouseView; member: StaffMember }
+  | { ok: false; error: "session_expired"; roster: StaffMember[] }
+  | { ok: false; error: "denied" }
+  | { ok: false; error: "failed" };
+
+export type ItemInput = {
+  id: string | null;
+  categoryId: string;
+  name_te: string;
+  name_en: string;
+  description_te: string;
+  description_en: string;
+  price: number;
+  diet: Diet;
+  available: boolean;
+  variants: PricedChoice[];
+  addons: PricedChoice[];
+  addonMax: number;
+};
+
+export type DeskInput = {
+  areaId: string;
+  number: number;
+  seats: number;
+};
+
+export type StaffInput = {
+  name: string;
+  role: Role;
+  locale: "te" | "en";
+};

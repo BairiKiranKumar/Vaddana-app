@@ -47,15 +47,27 @@ export function SlowNotice({ i18n: { t } }: { i18n: Translator }) {
   );
 }
 
-export function LoadError({ i18n: { t }, onRetry, titleAs = "p" }: { i18n: Translator; onRetry?: () => void; titleAs?: "p" | "h1" }) {
+export function LoadError({
+  i18n: { t },
+  onRetry,
+  titleAs = "p",
+  title,
+  body,
+}: {
+  i18n: Translator;
+  onRetry?: () => void;
+  titleAs?: "p" | "h1";
+  title?: string;
+  body?: string;
+}) {
   const Title = titleAs;
   return (
     <div role="alert" className="flex flex-col items-start gap-3 rounded-sheet border border-danger bg-surface p-4">
       <Title className="flex items-center gap-2 text-lg font-semibold text-danger">
         <TriangleAlert aria-hidden className="size-5 shrink-0" />
-        {t("state.error.title")}
+        {title ?? t("state.error.title")}
       </Title>
-      <p className="text-base text-ink-muted">{t("state.error.body")}</p>
+      <p className="text-base text-ink-muted">{body ?? t("state.error.body")}</p>
       <Button variant="secondary" type="button" onClick={onRetry}>{t("state.error.retry")}</Button>
     </div>
   );
@@ -82,11 +94,11 @@ export function BlockMessage({
   );
 }
 
-export function OfflineBanner({ i18n: { t } }: { i18n: Translator }) {
+export function OfflineBanner({ i18n: { t }, message }: { i18n: Translator; message?: string }) {
   return (
     <p role="status" className="flex items-start gap-2 rounded-control border border-warn bg-surface px-3 py-2 text-base">
       <WifiOff aria-hidden className="mt-1 size-5 shrink-0 text-warn" />
-      {t("state.offline")}
+      {message ?? t("state.offline")}
     </p>
   );
 }

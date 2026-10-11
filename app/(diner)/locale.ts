@@ -5,7 +5,7 @@ import { isLocale, type Locale } from "@/lib/i18n";
 
 const COOKIE = "vaddana-locale";
 
-/** Cookie, or Telugu when the diner has not chosen yet. The demo restaurant's default is Telugu. */
+/** Cookie, or Telugu when the diner has not chosen yet. */
 export async function readDinerLocale(): Promise<Locale> {
   const value = (await cookies()).get(COOKIE)?.value;
   return isLocale(value) ? value : "te";

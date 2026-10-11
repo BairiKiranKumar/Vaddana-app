@@ -1,19 +1,25 @@
-import type { MenuCategory, MenuItem, Restaurant, TableInfo } from "@/lib/data/types";
+import type { MenuCategory, MenuItem, Restaurant } from "@/lib/data/types";
 
-// PLACEHOLDER sample for the diner demo. Not a real restaurant, not a pilot.
+// PLACEHOLDER menu for the in-memory restaurant. Not a real restaurant and not a pilot.
 // Dishes are common on Nizamabad / Hyderabad menus. Telugu spellings are drafts pending native review.
 // Prices are rupees, stored on the item. The repo turns them into line and bill totals.
 
-export const demoRestaurant: Restaurant = {
-  id: "demo",
-  name_te: "వడ్డన డెమో",
-  name_en: "Vaddana demo",
-  tagline_te: null,
-  tagline_en: null,
+export const sampleRestaurant: Restaurant = {
+  id: "srinidhi",
+  name_te: "శ్రీనిధి భవన్",
+  name_en: "Srinidhi Bhavan",
+  tagline_te: "నిజామాబాద్",
+  tagline_en: "Nizamabad",
   defaultLocale: "te",
+  gstin: "",
+  fssai: "",
+  taxMode: "none",
+  gstRate: 0,
+  upiId: "",
+  autoAccept: false,
+  payFirst: false,
+  logoDataUrl: null,
 };
-
-export const demoTable: TableInfo = { token: "demo", number: 7 };
 
 export const categories: MenuCategory[] = [
   { id: "tiffin", name_te: "టిఫిన్", name_en: "Tiffin", sort: 1 },
